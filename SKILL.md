@@ -2,7 +2,19 @@
 
 ## Purpose
 
-Convert text to speech and generate WhatsApp-compatible audio files in Opus/OGG format. This command-line tool accepts text input and outputs an audio file that can be shared directly in WhatsApp conversations.
+Convert text to speech and generate WhatsApp-compatible audio files in Opus/OGG format. This command-line tool is designed to be used by an **OpenClaw bot** integrated with WhatsApp channels.
+
+**Bot Integration Use Case**: 
+
+This skill is triggered when a user sends an **audio message** (voice note) to the bot via WhatsApp. The bot workflow is:
+
+1. **User sends audio** → WhatsApp channel receives voice message
+2. **Bot detects audio input** → Triggers this TTS skill (not triggered for text messages)
+3. **Bot generates response text** → Passes text to this skill
+4. **Skill converts text to audio** → Generates WhatsApp-compatible `.ogg` file
+5. **Bot sends audio back** → User receives voice response
+
+This ensures the bot maintains the same communication mode as the user: when users send voice messages, they receive voice responses.
 
 ## Usage
 
