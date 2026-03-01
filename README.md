@@ -1,0 +1,96 @@
+# WhatsApp TTS Script
+
+Convert text to speech and generate WhatsApp-compatible audio files in Opus/OGG format.
+
+## Quick Start
+
+### Installation
+
+1. **Install Python dependencies**:
+```bash
+pip install -r requirements.txt
+```
+
+2. **Install system dependencies** (Oracle Linux):
+```bash
+sudo yum install -y ffmpeg
+```
+
+### Usage
+
+```bash
+python tts.py "hello world"
+```
+
+The script will:
+- Convert your text to speech
+- Generate a WhatsApp-compatible audio file (Opus/OGG)
+- Print the absolute file path
+
+### Example
+
+```bash
+$ python tts.py "Hello, this is a test message"
+/home/user/tts/output/tts_20260301_140530_a3f2b1c8.ogg
+```
+
+## Features
+
+- ✅ Text-to-speech conversion using Google TTS
+- ✅ WhatsApp-compatible audio format (Opus codec in OGG container)
+- ✅ Automatic unique file naming
+- ✅ Multi-language support (auto-detection)
+- ✅ Clear error messages with exit codes
+
+## Requirements
+
+- Python 3.8 or higher
+- ffmpeg
+- Internet connection (for TTS API)
+
+## Documentation
+
+See [SKILL.md](SKILL.md) for complete documentation including:
+- Detailed usage examples
+- Error codes and troubleshooting
+- Platform requirements
+- Performance characteristics
+
+## Project Structure
+
+```
+tts/
+├── tts.py                    # Main executable script
+├── SKILL.md                  # Complete documentation
+├── README.md                 # This file
+├── requirements.txt          # Python dependencies
+├── tests/                    # Test suite
+│   ├── test_tts.py
+│   ├── test_audio_format.py
+│   └── test_integration.py
+└── output/                   # Generated audio files
+```
+
+## Development
+
+### Running Tests
+
+```bash
+pytest tests/
+```
+
+### Installing Development Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+## License
+
+See LICENSE file for details.
+
+## Version
+
+**Version**: 1.0.0 (MVP)  
+**Status**: Production Ready  
+**Last Updated**: March 1, 2026
