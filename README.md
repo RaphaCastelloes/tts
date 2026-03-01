@@ -2,6 +2,8 @@
 
 Convert text to speech and generate WhatsApp-compatible audio files in Opus/OGG format.
 
+**Purpose**: This skill is designed for **OpenClaw bot** integration with WhatsApp channels. It's triggered when users send audio messages to the bot, ensuring the bot responds with voice when users communicate via voice.
+
 ## Quick Start
 
 ### Installation
