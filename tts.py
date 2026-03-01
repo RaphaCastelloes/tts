@@ -112,8 +112,8 @@ def generate_speech(text):
         Exception: If TTS generation fails
     """
     try:
-        # Use English as default, gTTS will auto-detect from text
-        tts = gTTS(text=text, lang='en', slow=False)
+        # Use Portuguese (Brazil) as default
+        tts = gTTS(text=text, lang='pt-br', slow=False)
         audio_fp = io.BytesIO()
         tts.write_to_fp(audio_fp)
         audio_fp.seek(0)
