@@ -63,3 +63,6 @@ Thumbs.db
 # Temporary files
 *.bak
 *~
+
+# Media files
+*.mp3
