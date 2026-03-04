@@ -65,7 +65,7 @@ def generate_filename():
     """
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     unique_hash = str(uuid.uuid4())[:8]
-    return f"tts_{timestamp}_{unique_hash}.ogg"
+    return f"tts_{timestamp}_{unique_hash}.mp3"
 
 
 def ensure_output_directory():
@@ -120,41 +120,6 @@ def generate_speech(text):
     except Exception as e:
         raise Exception(f"TTS generation failed: {e}")
 
-
-def encode_to_opus_ogg(mp3_data, output_path):
-    """
-    Convert MP3 audio to Opus/OGG format for WhatsApp.
-    
-    Args:
-        mp3_data: MP3 audio data (BytesIO object)
-        output_path: Path to save the output file
-        
-    Raises:
-        Exception: If encoding fails
-    """
-    try:
-        # Load MP3 audio
-        audio = AudioSegment.from_mp3(mp3_data)
-        
-        # Convert to mono and set sample rate to 16kHz (WhatsApp standard)
-        audio = audio.set_channels(1)
-        audio = audio.set_frame_rate(16000)
-        
-        # Export as Opus in OGG container
-        audio.export(
-            output_path,
-            format="ogg",
-            codec="libopus",
-            parameters=["-strict", "-2"]
-        )
-    except FileNotFoundError as e:
-        if "ffmpeg" in str(e).lower() or "avconv" in str(e).lower():
-            raise Exception("ffmpeg not installed. Run: sudo yum install ffmpeg")
-        raise Exception(f"Audio encoding failed: {e}")
-    except Exception as e:
-        raise Exception(f"Audio encoding failed: {e}")
-
-
 def main():
     """Main execution function."""
     # Check for command-line arguments
@@ -185,6 +150,10 @@ def main():
     # Generate speech from text
     try:
         mp3_audio = generate_speech(text)
+        with open(output_path, "wb") as f:
+            f.write(mp3_audio.read())
+        print(output_path)
+        sys.exit(EXIT_SUCCESS)
     except Exception as e:
         error_msg = str(e)
         # Debug: print actual error
@@ -196,9 +165,6 @@ def main():
             print_error(f"TTS service temporarily unavailable. Please try again later.")
             sys.exit(EXIT_NETWORK_ERROR)
     
-    # Encode audio to Opus/OGG format
-    try:
-        encode_to_opus_ogg(mp3_audio, output_path)
     except Exception as e:
         error_msg = str(e)
         if "ffmpeg" in error_msg:
