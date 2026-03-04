@@ -21,6 +21,12 @@ except ImportError:
     print("Error: gTTS not installed. Run: pip install gTTS==2.5.0", file=sys.stderr)
     sys.exit(4)
 
+try:
+    from pydub import AudioSegment
+except ImportError:
+    print("Error: pydub not installed. Run: pip install pydub==0.25.1", file=sys.stderr)
+    sys.exit(4)
+
 
 
 # Exit codes
@@ -54,14 +60,14 @@ def generate_filename():
     """
     Generate unique filename for audio file.
     
-    Format: tts_YYYYMMDD_HHMMSS_<hash>.mp3
+    Format: tts_YYYYMMDD_HHMMSS_<hash>.ogg
     
     Returns:
         str: Generated filename
     """
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     unique_hash = str(uuid.uuid4())[:8]
-    return f"tts_{timestamp}_{unique_hash}.mp3"
+    return f"tts_{timestamp}_{unique_hash}.ogg"
 
 
 def ensure_output_directory():
@@ -117,6 +123,40 @@ def generate_speech(text):
         raise Exception(f"TTS generation failed: {e}")
 
 
+def encode_to_opus_ogg(mp3_data, output_path):
+    """
+    Convert MP3 audio to Opus/OGG format for WhatsApp.
+    
+    Args:
+        mp3_data: MP3 audio data (BytesIO object)
+        output_path: Path to save the output file
+        
+    Raises:
+        Exception: If encoding fails
+    """
+    try:
+        # Load MP3 audio
+        audio = AudioSegment.from_mp3(mp3_data)
+        
+        # Convert to mono and set sample rate to 16kHz (WhatsApp standard)
+        audio = audio.set_channels(1)
+        audio = audio.set_frame_rate(16000)
+        
+        # Export as Opus in OGG container
+        audio.export(
+            output_path,
+            format="ogg",
+            codec="libopus",
+            parameters=["-strict", "-2"]
+        )
+    except FileNotFoundError as e:
+        if "ffmpeg" in str(e).lower() or "avconv" in str(e).lower():
+            raise Exception("ffmpeg not installed. Run: sudo yum install ffmpeg")
+        raise Exception(f"Audio encoding failed: {e}")
+    except Exception as e:
+        raise Exception(f"Audio encoding failed: {e}")
+
+
 def main():
     """Main execution function."""
     # Parse command-line arguments
@@ -156,9 +196,13 @@ def main():
     if args.file_path:
         # Use custom file path
         output_path = Path(args.file_path)
-        # Ensure .mp3 extension
-        if output_path.suffix.lower() != '.mp3':
-            output_path = output_path.with_suffix('.mp3')
+        # Ensure .ogg extension
+        if output_path.suffix.lower() == '.mp3':
+            # Replace .mp3 with .ogg
+            output_path = output_path.with_suffix('.ogg')
+        elif output_path.suffix.lower() != '.ogg':
+            # Add .ogg if no extension or other extension
+            output_path = output_path.with_suffix('.ogg')
         # Create parent directory if needed
         try:
             output_path.parent.mkdir(parents=True, exist_ok=True)
@@ -182,13 +226,16 @@ def main():
             print_error(f"TTS service temporarily unavailable. Please try again later.")
             sys.exit(EXIT_NETWORK_ERROR)
     
-    # Save MP3 audio to file
+    # Encode audio to Opus/OGG format
     try:
-        with open(output_path, "wb") as f:
-            f.write(mp3_audio.read())
+        encode_to_opus_ogg(mp3_audio, output_path)
     except Exception as e:
-        print_error(f"Cannot write to output directory. Check permissions.")
-        sys.exit(EXIT_FILESYSTEM_ERROR)
+        error_msg = str(e)
+        if "ffmpeg" in error_msg:
+            print_error(error_msg)
+        else:
+            print_error("Audio encoding failed. Check ffmpeg installation.")
+        sys.exit(EXIT_PROCESSING_ERROR)
     
     # Print absolute file path to stdout
     print(output_path.absolute())

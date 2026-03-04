@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Convert text to speech and generate WhatsApp-compatible audio files in MP3 format. This command-line tool is designed to be used by an **OpenClaw bot** integrated with WhatsApp channels.
+Convert text to speech and generate WhatsApp-compatible audio files in OGG/Opus format. This command-line tool is designed to be used by an **OpenClaw bot** integrated with WhatsApp channels.
 
 **Bot Integration Use Case**: 
 
@@ -11,7 +11,7 @@ This skill is triggered when a user sends an **audio message** (voice note) to t
 1. **User sends audio** → WhatsApp channel receives voice message
 2. **Bot detects audio input** → Triggers this TTS skill (not triggered for text messages)
 3. **Bot generates response text** → Passes text to this skill
-4. **Skill converts text to audio** → Generates WhatsApp-compatible `.mp3` file
+4. **Skill converts text to audio** → Generates WhatsApp-compatible `.ogg` file
 5. **Bot sends audio back** → User receives voice response
 
 This ensures the bot maintains the same communication mode as the user: when users send voice messages, they receive voice responses.
@@ -40,14 +40,14 @@ python tts.py "Good morning! Let's meet at 3 PM."
 python tts.py "This is a longer message that will be converted to speech for WhatsApp."
 
 # Custom output file path
-python tts.py "hello" -o /path/to/my_audio.mp3
+python tts.py "hello" -o /path/to/my_audio.ogg
 
 # Short form
-python tts.py "hello" --output custom_name.mp3
+python tts.py "hello" --output custom_name.ogg
 
-# Auto-adds .mp3 extension if missing
+# Auto-adds .ogg extension if missing
 python tts.py "hello" -o myfile
-# Creates: myfile.mp3
+# Creates: myfile.ogg
 ```
 
 ### Command-Line Options
@@ -93,24 +93,26 @@ Error: <error_message>
 
 - **Default Location**: `output/` directory (created automatically)
 - **Custom Location**: Use `-o` or `--output` to specify any file path
-- **Format**: MP3
-- **Default Naming**: `tts_YYYYMMDD_HHMMSS_<hash>.mp3` (when no custom path specified)
-- **Custom Naming**: Your specified filename (auto-adds `.mp3` if missing)
+- **Format**: OGG (Opus codec)
+- **Sample Rate**: 16kHz
+- **Channels**: Mono
+- **Default Naming**: `tts_YYYYMMDD_HHMMSS_<hash>.ogg` (when no custom path specified)
+- **Custom Naming**: Your specified filename (auto-adds `.ogg` if missing)
 - **Compatibility**: WhatsApp (Android & iOS)
 
 **Examples**:
 ```bash
 # Default: auto-generated in output/
 python tts.py "hello"
-# Output: /path/to/tts/output/tts_20260303_221254_25f5558e.mp3
+# Output: /path/to/tts/output/tts_20260303_221254_25f5558e.ogg
 
 # Custom path:
-python tts.py "hello" -o my_audio.mp3
-# Output: /path/to/tts/my_audio.mp3
+python tts.py "hello" -o my_audio.ogg
+# Output: /path/to/tts/my_audio.ogg
 
 # Custom path without extension:
 python tts.py "hello" -o my_audio
-# Output: /path/to/tts/my_audio.mp3
+# Output: /path/to/tts/my_audio.ogg
 ```
 
 ## Dependencies
@@ -125,13 +127,27 @@ pip install -r requirements.txt
 
 Required packages:
 - `gTTS==2.5.0` - Google Text-to-Speech API
+- `pydub==0.25.1` - Audio processing and format conversion
 - `pytest==7.4.3` - Testing framework (development only)
 
 ### System Dependencies
 
 **Required**:
 - Python 3.8 or higher
+- **ffmpeg** - Audio encoder with Opus codec support
 - Internet connection (for TTS API)
+
+**Install ffmpeg on Oracle Linux**:
+```bash
+# Enable EPEL repository
+sudo yum install -y epel-release
+
+# Install ffmpeg
+sudo yum install -y ffmpeg
+
+# Verify installation
+ffmpeg -version
+```
 
 
 ## Exit Codes
