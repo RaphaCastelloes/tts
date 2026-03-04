@@ -27,27 +27,34 @@ python tts.py "your text here"
 ### Examples
 
 ```bash
-# Simple English text
-python tts.py "hello world"
-
-# Portuguese text
+# Default language (Brazilian Portuguese)
 python tts.py "Olá, como você está?"
 
+# English text with explicit language selection
+python tts.py "hello world" --lang en
+
+# Portuguese text with explicit language selection
+python tts.py "Olá mundo" --lang pt-br
+
 # Text with punctuation
-python tts.py "Good morning! Let's meet at 3 PM."
+python tts.py "Good morning! Let's meet at 3 PM." --lang en
 
 # Longer message
-python tts.py "This is a longer message that will be converted to speech for WhatsApp."
+python tts.py "This is a longer message that will be converted to speech for WhatsApp." --lang en
 
 # Custom output file path
-python tts.py "hello" -o /path/to/my_audio.mp3
+python tts.py "hello" -o /path/to/my_audio.mp3 --lang en
 
 # Short form
-python tts.py "hello" --output custom_name.mp3
+python tts.py "hello" --output custom_name.mp3 --lang en
 
 # Auto-adds .mp3 extension if missing
-python tts.py "hello" -o myfile
+python tts.py "hello" -o myfile --lang en
 # Creates: myfile.mp3
+
+# Default language without --lang (backward compatible)
+python tts.py "Olá mundo"
+# Uses pt-br by default
 ```
 
 ### Command-Line Options
@@ -62,6 +69,7 @@ python tts.py TEXT              # Text to convert to speech
 # Optional arguments
 python tts.py TEXT -o FILE      # Custom output file path
 python tts.py TEXT --output FILE # Same as -o
+python tts.py TEXT --lang LANG  # Language for speech output (en or pt-br, default: pt-br)
 ```
 
 ## Inputs
@@ -70,6 +78,7 @@ python tts.py TEXT --output FILE # Same as -o
 |-----------|------|----------|-------------|-------------|
 | text | string | Yes | Text to convert to speech | 1-1000 characters, UTF-8 encoded |
 | -o, --output | string | No | Custom output file path | Valid file path, .mp3 extension auto-added if missing |
+| --lang | string | No | Language for speech output | Must be 'en' or 'pt-br' (default: pt-br) |
 
 ## Outputs
 
@@ -151,6 +160,8 @@ Required packages:
 ```
 Error: No text provided. Usage: python tts.py "text"
 Error: Text exceeds maximum length of 1000 characters
+usage: tts.py [-h] [-o FILE_PATH] [--lang {en,pt-br}] text
+tts.py: error: argument --lang: invalid choice: 'fr' (choose from 'en', 'pt-br')
 ```
 
 ### Network Errors (Exit Code 2)

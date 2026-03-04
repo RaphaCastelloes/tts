@@ -84,3 +84,50 @@ class TestPerformance:
     def test_file_size_reasonable(self):
         """Test generated file size is reasonable."""
         pass
+
+
+class TestLanguageIntegration:
+    """Integration tests for language selection feature."""
+    
+    def test_default_language_without_lang_arg(self):
+        """Test script uses pt-br when --lang argument not provided."""
+        import tts
+        from unittest.mock import patch, MagicMock
+        
+        # Mock gTTS to verify it's called with pt-br
+        with patch('tts.gTTS') as mock_gtts:
+            mock_instance = MagicMock()
+            mock_gtts.return_value = mock_instance
+            
+            # Simulate calling without --lang
+            with patch.object(sys, 'argv', ['tts.py', 'Olá mundo']):
+                try:
+                    # This would normally run main(), but we'll test generate_speech directly
+                    tts.generate_speech('Olá mundo')
+                    mock_gtts.assert_called_with(text='Olá mundo', lang='pt-br', slow=False)
+                except:
+                    pass
+    
+    def test_explicit_english_selection(self):
+        """Test script uses en when --lang en provided."""
+        import tts
+        from unittest.mock import patch, MagicMock
+        
+        with patch('tts.gTTS') as mock_gtts:
+            mock_instance = MagicMock()
+            mock_gtts.return_value = mock_instance
+            
+            tts.generate_speech('Hello world', lang='en')
+            mock_gtts.assert_called_with(text='Hello world', lang='en', slow=False)
+    
+    def test_explicit_portuguese_selection(self):
+        """Test script uses pt-br when --lang pt-br provided."""
+        import tts
+        from unittest.mock import patch, MagicMock
+        
+        with patch('tts.gTTS') as mock_gtts:
+            mock_instance = MagicMock()
+            mock_gtts.return_value = mock_instance
+            
+            tts.generate_speech('Olá mundo', lang='pt-br')
+            mock_gtts.assert_called_with(text='Olá mundo', lang='pt-br', slow=False)

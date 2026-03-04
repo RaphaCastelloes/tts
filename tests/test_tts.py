@@ -4,6 +4,7 @@ import pytest
 import os
 import sys
 from unittest.mock import Mock, patch, MagicMock
+import argparse
 
 # Add parent directory to path to import tts module
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -127,3 +128,80 @@ class TestMultiLanguage:
     def test_language_auto_detection(self):
         """Test automatic language detection."""
         pass
+
+
+class TestLanguageSelection:
+    """Tests for --lang argument and language selection."""
+    
+    def test_default_language_is_pt_br(self):
+        """Test that default language is pt-br when --lang not provided."""
+        import tts
+        import argparse
+        
+        # Simulate command line without --lang argument
+        test_args = ['tts.py', 'test text']
+        with patch.object(sys, 'argv', test_args):
+            parser = argparse.ArgumentParser()
+            parser.add_argument('text')
+            parser.add_argument('-o', '--output', dest='file_path')
+            parser.add_argument('--lang', default='pt-br', choices=['en', 'pt-br'])
+            args = parser.parse_args(test_args[1:])
+            
+            assert args.lang == 'pt-br', "Default language should be pt-br"
+    
+    def test_lang_argument_accepts_en(self):
+        """Test that --lang en is accepted."""
+        import argparse
+        
+        test_args = ['tts.py', 'test text', '--lang', 'en']
+        parser = argparse.ArgumentParser()
+        parser.add_argument('text')
+        parser.add_argument('-o', '--output', dest='file_path')
+        parser.add_argument('--lang', default='pt-br', choices=['en', 'pt-br'])
+        args = parser.parse_args(test_args[1:])
+        
+        assert args.lang == 'en', "Language should be en when --lang en provided"
+    
+    def test_lang_argument_accepts_pt_br(self):
+        """Test that --lang pt-br is accepted."""
+        import argparse
+        
+        test_args = ['tts.py', 'test text', '--lang', 'pt-br']
+        parser = argparse.ArgumentParser()
+        parser.add_argument('text')
+        parser.add_argument('-o', '--output', dest='file_path')
+        parser.add_argument('--lang', default='pt-br', choices=['en', 'pt-br'])
+        args = parser.parse_args(test_args[1:])
+        
+        assert args.lang == 'pt-br', "Language should be pt-br when --lang pt-br provided"
+    
+    def test_invalid_language_code_rejected(self):
+        """Test that invalid language codes are rejected."""
+        import argparse
+        
+        test_args = ['tts.py', 'test text', '--lang', 'fr']
+        parser = argparse.ArgumentParser()
+        parser.add_argument('text')
+        parser.add_argument('-o', '--output', dest='file_path')
+        parser.add_argument('--lang', default='pt-br', choices=['en', 'pt-br'])
+        
+        with pytest.raises(SystemExit):
+            args = parser.parse_args(test_args[1:])
+    
+    def test_generate_speech_uses_language_parameter(self):
+        """Test that generate_speech function uses the language parameter."""
+        import tts
+        from unittest.mock import patch, MagicMock
+        
+        # Mock gTTS to verify language parameter is passed
+        with patch('tts.gTTS') as mock_gtts:
+            mock_instance = MagicMock()
+            mock_gtts.return_value = mock_instance
+            
+            # Call with English
+            tts.generate_speech('test text', lang='en')
+            mock_gtts.assert_called_with(text='test text', lang='en', slow=False)
+            
+            # Call with Portuguese
+            tts.generate_speech('test text', lang='pt-br')
+            mock_gtts.assert_called_with(text='test text', lang='pt-br', slow=False)

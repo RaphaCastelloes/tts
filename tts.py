@@ -93,12 +93,13 @@ def print_error(message):
     print(f"Error: {message}", file=sys.stderr)
 
 
-def generate_speech(text):
+def generate_speech(text, lang='pt-br'):
     """
     Generate speech from text using gTTS.
     
     Args:
         text: Text to convert to speech
+        lang: Language code for speech output (default: 'pt-br')
         
     Returns:
         io.BytesIO: MP3 audio data in memory
@@ -107,8 +108,7 @@ def generate_speech(text):
         Exception: If TTS generation fails
     """
     try:
-        # Use Portuguese (Brazil) as default
-        tts = gTTS(text=text, lang='pt-br', slow=False)
+        tts = gTTS(text=text, lang=lang, slow=False)
         audio_fp = io.BytesIO()
         tts.write_to_fp(audio_fp)
         audio_fp.seek(0)
@@ -129,6 +129,12 @@ def main():
         '-o', '--output',
         dest='file_path',
         help='Custom output file path (optional). If not provided, auto-generates in output/ directory'
+    )
+    parser.add_argument(
+        '--lang',
+        default='pt-br',
+        choices=['en', 'pt-br'],
+        help='Language for speech output (default: pt-br)'
     )
     
     try:
@@ -172,7 +178,7 @@ def main():
     
     # Generate speech from text
     try:
-        mp3_audio = generate_speech(text)
+        mp3_audio = generate_speech(text, args.lang)
     except Exception as e:
         error_msg = str(e)
         if "network" in error_msg.lower() or "connection" in error_msg.lower():
