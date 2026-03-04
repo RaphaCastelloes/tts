@@ -8,11 +8,14 @@ Convert text to speech and generate WhatsApp-compatible audio files in MP3 forma
 
 This skill is triggered when a user sends an **audio message** (voice note) to the bot via WhatsApp. The bot workflow is:
 
+- Check the skill **whatsapp-audio-sender**
+
 1. **User sends audio** → WhatsApp channel receives voice message
 2. **Bot detects audio input** → Triggers this TTS skill (not triggered for text messages)
 3. **Bot generates response text** → Passes text to this skill
-4. **Skill converts text to audio** → Generates WhatsApp-compatible `.mp3` file
-5. **Bot sends audio back** → User receives voice response
+4. **Skill converts text to audio** → Generates `.mp3` file
+5. **Another Skill - mp3-to-ogg - converts mp3 to ogg** → Generates WhatsApp-compatible `.ogg` file
+6. **Bot sends audio back ogg** → User receives voice response
 
 This ensures the bot maintains the same communication mode as the user: when users send voice messages, they receive voice responses.
 
