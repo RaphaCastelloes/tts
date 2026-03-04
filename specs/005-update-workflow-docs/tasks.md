@@ -77,7 +77,7 @@
 - [x] T010 [P] Create contracts directory in specs/005-update-workflow-docs/contracts/
 - [x] T011 Update agent context via .specify/scripts/powershell/update-agent-context.ps1
 - [x] T012 Commit planning artifacts to branch 005-update-workflow-docs
-- [ ] T013 Create tasks.md in specs/005-update-workflow-docs/tasks.md (this file)
+- [x] T013 Create tasks.md in specs/005-update-workflow-docs/tasks.md (this file)
 - [ ] T014 Final commit of tasks.md to branch 005-update-workflow-docs
 - [ ] T015 Push branch 005-update-workflow-docs to remote (optional)
 - [ ] T016 Create pull request for review (optional)
@@ -138,5 +138,5 @@
 - No code changes required - documentation only
 - No automated tests required - manual review sufficient
 - Feature is backward compatible (documentation improvement)
-- Total task count: 16 tasks (12 complete, 4 remaining)
-- Estimated completion: 100% of core work done, documentation finalization in progress
+- Total task count: 16 tasks (13 complete, 3 remaining)
+- Estimated completion: 100% of core work done, final commits pending
