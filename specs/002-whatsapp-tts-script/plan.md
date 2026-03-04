@@ -7,20 +7,20 @@
 
 ## Summary
 
-Create a command-line Python script that converts text to speech and outputs WhatsApp-compatible audio files in Opus/OGG format. The script accepts text as a command-line argument, generates the audio file, and prints the absolute file path to the terminal. Must run on Linux Oracle 10 ARM 64-bit architecture.
+Create a command-line Python script that converts text to speech and outputs WhatsApp-compatible audio files in MP3 format. The script accepts text as a command-line argument, generates the audio file, and prints the absolute file path to the terminal. Must run on Linux Oracle 10 ARM 64-bit architecture.
 
 ## Technical Context
 
 **Language/Version**: Python 3.8+ (Oracle Linux compatible)  
-**Primary Dependencies**: gTTS 2.5.0 (text-to-speech), pydub 0.25.1 (audio format conversion)  
+**Primary Dependencies**: gTTS 2.5.0 (text-to-speech)  
 **Storage**: Local file system (audio output files in `output/` directory)  
 **Testing**: pytest  
 **Target Platform**: Linux Oracle 10 ARM 64-bit
 **Project Type**: CLI script  
 **Performance Goals**: Generate audio in <10 seconds for typical messages (up to 500 characters)  
-**Constraints**: Headless execution (no GUI), ARM 64-bit compatible dependencies, WhatsApp audio format compliance (Opus codec in OGG container), Internet connection required (gTTS API)  
+**Constraints**: Headless execution (no GUI), ARM 64-bit compatible dependencies, WhatsApp audio format compliance (MP3), Internet connection required (gTTS API)  
 **Scale/Scope**: Single-user command-line tool, processes 1-1000 character text inputs
-**System Dependencies**: ffmpeg (for Opus/OGG encoding via pydub)
+**System Dependencies**: None (pure Python)
 
 ## Constitution Check
 
@@ -38,9 +38,9 @@ Create a command-line Python script that converts text to speech and outputs Wha
 - ✅ **PASS**: No GUI dependencies
 
 ### Principle III: Minimal Dependencies
-- ✅ **PASS**: Only 2 Python dependencies (gTTS, pydub) + 1 system dependency (ffmpeg)
+- ✅ **PASS**: Only 1 Python dependency (gTTS) + 0 system dependencies
 - ✅ **PASS**: All dependencies justified in research.md
-- ✅ **PASS**: ARM 64-bit compatibility verified (pure Python + ffmpeg ARM support confirmed)
+- ✅ **PASS**: ARM 64-bit compatibility verified (pure Python)
 
 ### Principle IV: Error Handling & Observability
 - ✅ **PASS**: Error handling required (FR-011: clear error messages)
@@ -56,7 +56,7 @@ Create a command-line Python script that converts text to speech and outputs Wha
 - ✅ **PASS**: Target platform is Oracle Linux (specified in requirements)
 - ✅ **PASS**: Python 3.8+ compatible
 - ✅ **PASS**: Headless execution (no GUI)
-- ✅ **PASS**: System dependencies identified (ffmpeg, installable via yum)
+- ✅ **PASS**: No system dependencies required
 - ✅ **PASS**: POSIX file paths (Linux environment)
 
 **Overall Status (Initial)**: CONDITIONAL PASS - Proceed to Phase 0 to resolve dependency clarifications
@@ -73,7 +73,7 @@ All constitutional principles are satisfied:
 
 1. **Skill-Centric Architecture**: Single tts.py script with comprehensive SKILL.md documentation
 2. **Text I/O Protocol**: Pure CLI with stdin/stdout/stderr, no GUI dependencies
-3. **Minimal Dependencies**: Only 2 Python packages + 1 system package, all justified and ARM-compatible
+3. **Minimal Dependencies**: Only 1 Python package (gTTS), no system dependencies, pure Python ARM-compatible
 4. **Error Handling**: Comprehensive error handling with 4 distinct exit codes and clear messages
 5. **Test-First Development**: Test structure defined, ready for TDD implementation
 6. **Platform Constraints**: Oracle Linux compatible, Python 3.8+, headless execution verified

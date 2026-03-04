@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Convert text to speech and generate WhatsApp-compatible audio files in Opus/OGG format. This command-line tool is designed to be used by an **OpenClaw bot** integrated with WhatsApp channels.
+Convert text to speech and generate WhatsApp-compatible audio files in MP3 format. This command-line tool is designed to be used by an **OpenClaw bot** integrated with WhatsApp channels.
 
 **Bot Integration Use Case**: 
 
@@ -11,7 +11,7 @@ This skill is triggered when a user sends an **audio message** (voice note) to t
 1. **User sends audio** → WhatsApp channel receives voice message
 2. **Bot detects audio input** → Triggers this TTS skill (not triggered for text messages)
 3. **Bot generates response text** → Passes text to this skill
-4. **Skill converts text to audio** → Generates WhatsApp-compatible `.ogg` file
+4. **Skill converts text to audio** → Generates WhatsApp-compatible `.mp3` file
 5. **Bot sends audio back** → User receives voice response
 
 This ensures the bot maintains the same communication mode as the user: when users send voice messages, they receive voice responses.
@@ -38,6 +38,30 @@ python tts.py "Good morning! Let's meet at 3 PM."
 
 # Longer message
 python tts.py "This is a longer message that will be converted to speech for WhatsApp."
+
+# Custom output file path
+python tts.py "hello" -o /path/to/my_audio.mp3
+
+# Short form
+python tts.py "hello" --output custom_name.mp3
+
+# Auto-adds .mp3 extension if missing
+python tts.py "hello" -o myfile
+# Creates: myfile.mp3
+```
+
+### Command-Line Options
+
+```bash
+# View help
+python tts.py --help
+
+# Required argument
+python tts.py TEXT              # Text to convert to speech
+
+# Optional arguments
+python tts.py TEXT -o FILE      # Custom output file path
+python tts.py TEXT --output FILE # Same as -o
 ```
 
 ## Inputs
@@ -45,6 +69,7 @@ python tts.py "This is a longer message that will be converted to speech for Wha
 | Parameter | Type | Required | Description | Constraints |
 |-----------|------|----------|-------------|-------------|
 | text | string | Yes | Text to convert to speech | 1-1000 characters, UTF-8 encoded |
+| -o, --output | string | No | Custom output file path | Valid file path, .mp3 extension auto-added if missing |
 
 ## Outputs
 
@@ -53,7 +78,7 @@ python tts.py "This is a longer message that will be converted to speech for Wha
 Prints the absolute file path of the generated audio file:
 
 ```
-/path/to/tts/output/tts_20260301_140530_a3f2b1c8.ogg
+/path/to/tts/output/tts_20260301_140530_a3f2b1c8.mp3
 ```
 
 ### Error Output (stderr)
@@ -66,11 +91,27 @@ Error: <error_message>
 
 ### Generated Audio Files
 
-- **Location**: `output/` directory (created automatically)
-- **Format**: Opus codec in OGG container
-- **Sample Rate**: 16000 Hz (mono)
-- **Naming**: `tts_YYYYMMDD_HHMMSS_<hash>.ogg`
+- **Default Location**: `output/` directory (created automatically)
+- **Custom Location**: Use `-o` or `--output` to specify any file path
+- **Format**: MP3
+- **Default Naming**: `tts_YYYYMMDD_HHMMSS_<hash>.mp3` (when no custom path specified)
+- **Custom Naming**: Your specified filename (auto-adds `.mp3` if missing)
 - **Compatibility**: WhatsApp (Android & iOS)
+
+**Examples**:
+```bash
+# Default: auto-generated in output/
+python tts.py "hello"
+# Output: /path/to/tts/output/tts_20260303_221254_25f5558e.mp3
+
+# Custom path:
+python tts.py "hello" -o my_audio.mp3
+# Output: /path/to/tts/my_audio.mp3
+
+# Custom path without extension:
+python tts.py "hello" -o my_audio
+# Output: /path/to/tts/my_audio.mp3
+```
 
 ## Dependencies
 
@@ -84,35 +125,14 @@ pip install -r requirements.txt
 
 Required packages:
 - `gTTS==2.5.0` - Google Text-to-Speech API
-- `pydub==0.25.1` - Audio format conversion
 - `pytest==7.4.3` - Testing framework (development only)
 
 ### System Dependencies
 
 **Required**:
 - Python 3.8 or higher
-- ffmpeg (for audio encoding)
 - Internet connection (for TTS API)
 
-**Installation on Oracle Linux**:
-
-```bash
-# Install ffmpeg
-sudo yum install -y ffmpeg
-
-# Verify installation
-ffmpeg -version
-```
-
-**Installation on other Linux distributions**:
-
-```bash
-# Debian/Ubuntu
-sudo apt-get install -y ffmpeg
-
-# Fedora/RHEL
-sudo dnf install -y ffmpeg
-```
 
 ## Exit Codes
 
@@ -122,7 +142,7 @@ sudo dnf install -y ffmpeg
 | 1 | Input Error | Invalid or missing text input |
 | 2 | Network Error | TTS service unavailable or network issue |
 | 3 | File System Error | Cannot write file or insufficient disk space |
-| 4 | Processing Error | Audio encoding or ffmpeg error |
+| 4 | Processing Error | Audio processing error |
 
 ## Error Messages
 
@@ -150,8 +170,7 @@ Error: Insufficient disk space to create audio file
 ### Processing Errors (Exit Code 4)
 
 ```
-Error: ffmpeg not installed. Run: sudo yum install ffmpeg
-Error: Audio encoding failed. Check ffmpeg installation.
+Error: Audio processing failed. Please try again.
 ```
 
 ## Troubleshooting
@@ -160,16 +179,15 @@ Error: Audio encoding failed. Check ffmpeg installation.
 
 **Check**:
 1. Internet connection is active
-2. ffmpeg is installed: `ffmpeg -version`
-3. Output directory has write permissions: `ls -ld output/`
-4. Sufficient disk space: `df -h`
+2. Output directory has write permissions: `ls -ld output/`
+3. Sufficient disk space: `df -h`
 
 ### Audio won't play in WhatsApp
 
 **Verify**:
-1. File format: `file output/tts_*.ogg` should show "Ogg data, Opus audio"
-2. File is not corrupted: `ffprobe output/tts_*.ogg`
-3. File size is reasonable (5-40 KB for typical messages)
+1. File format: `file output/tts_*.mp3` should show "MP3 audio"
+2. File is not corrupted
+3. File size is reasonable (10-50 KB for typical messages)
 
 ### Slow performance
 

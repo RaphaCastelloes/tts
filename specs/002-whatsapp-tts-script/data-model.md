@@ -47,23 +47,19 @@ Represents the generated audio file output.
 
 **Attributes**:
 - `file_path` (string): Absolute path to the generated audio file
-- `file_name` (string): Name of the file (e.g., `tts_20260301_140530_a3f2b1c8.ogg`)
-- `format` (string): Audio format, always "ogg" (Opus codec in OGG container)
-- `codec` (string): Audio codec, always "opus"
-- `sample_rate` (integer): Audio sample rate in Hz (16000 for WhatsApp)
-- `channels` (integer): Number of audio channels (1 for mono)
+- `file_name` (string): Name of the file (e.g., `tts_20260301_140530_a3f2b1c8.mp3`)
+- `format` (string): Audio format, always "mp3"
+- `file_size` (integer): File size in bytes
 - `duration` (float): Audio duration in seconds
 - `file_size` (integer): File size in bytes
 - `created_at` (datetime): Timestamp when file was created
 
 **Validation Rules**:
 - `file_path` MUST be absolute POSIX path
-- `file_name` MUST follow pattern: `tts_YYYYMMDD_HHMMSS_<hash>.ogg`
-- `format` MUST be "ogg"
-- `codec` MUST be "opus"
-- `sample_rate` MUST be 16000 (WhatsApp standard)
-- `channels` MUST be 1 (mono)
+- `file_name` MUST follow pattern: `tts_YYYYMMDD_HHMMSS_<hash>.mp3`
+- `format` MUST be "mp3"
 - File MUST be playable in WhatsApp
+- `file_size` MUST be > 0
 
 **State Transitions**:
 ```
@@ -73,13 +69,10 @@ Represents the generated audio file output.
 **Example**:
 ```python
 {
-    "file_path": "/home/user/tts/output/tts_20260301_140530_a3f2b1c8.ogg",
-    "file_name": "tts_20260301_140530_a3f2b1c8.ogg",
-    "format": "ogg",
-    "codec": "opus",
-    "sample_rate": 16000,
-    "channels": 1,
-    "duration": 2.5,
+    "file_path": "/home/user/tts/output/tts_20260301_140530_a3f2b1c8.mp3",
+    "file_name": "tts_20260301_140530_a3f2b1c8.mp3",
+    "format": "mp3",
+    "file_size": 24576,
     "file_size": 12480,
     "created_at": "2026-03-01T14:05:30Z"
 }
@@ -104,7 +97,7 @@ Represents the complete text-to-speech conversion operation (runtime entity, not
 - `PENDING`: Job created, not yet started
 - `VALIDATING`: Validating input text
 - `GENERATING_SPEECH`: Calling TTS API
-- `ENCODING_AUDIO`: Converting to Opus/OGG format
+- `SAVING_FILE`: Writing MP3 to disk
 - `COMPLETED`: Successfully generated audio file
 - `FAILED`: Conversion failed with error
 
@@ -124,8 +117,8 @@ PENDING → VALIDATING → GENERATING_SPEECH → ENCODING_AUDIO → COMPLETED
         "language": "en"
     },
     "output": {
-        "file_path": "/home/user/tts/output/tts_20260301_140530_a3f2b1c8.ogg",
-        "file_name": "tts_20260301_140530_a3f2b1c8.ogg",
+        "file_path": "/home/user/tts/output/tts_20260301_140530_a3f2b1c8.mp3",
+        "file_name": "tts_20260301_140530_a3f2b1c8.mp3",
         ...
     },
     "status": "COMPLETED",
@@ -167,7 +160,7 @@ TextInput (1) ──── processes to ──── (1) AudioFile
    ↓
 4. TTS generation (gTTS) produces MP3 audio
    ↓
-5. Audio encoding (pydub) converts to Opus/OGG
+5. MP3 audio written to file
    ↓
 6. AudioFile entity created with metadata
    ↓
@@ -182,9 +175,9 @@ TextInput (1) ──── processes to ──── (1) AudioFile
 
 ```
 output/
-├── tts_20260301_140530_a3f2b1c8.ogg
-├── tts_20260301_140615_b7e9c2d1.ogg
-└── tts_20260301_141020_f3a8d4e6.ogg
+├── tts_20260301_140530_a3f2b1c8.mp3
+├── tts_20260301_140615_b7e9c2d1.mp3
+└── tts_20260301_141020_f3a8d4e6.mp3
 ```
 
 **Rules**:

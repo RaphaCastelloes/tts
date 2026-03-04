@@ -1,6 +1,6 @@
 # WhatsApp TTS Script
 
-Convert text to speech and generate WhatsApp-compatible audio files in Opus/OGG format.
+Convert text to speech and generate WhatsApp-compatible audio files in MP3 format.
 
 **Purpose**: This skill is designed for **OpenClaw bot** integration with WhatsApp channels. It's triggered when users send audio messages to the bot, ensuring the bot responds with voice when users communicate via voice.
 
@@ -13,10 +13,6 @@ Convert text to speech and generate WhatsApp-compatible audio files in Opus/OGG 
 pip install -r requirements.txt
 ```
 
-2. **Install system dependencies** (Oracle Linux):
-```bash
-sudo yum install -y ffmpeg
-```
 
 ### Usage
 
@@ -26,28 +22,27 @@ python tts.py "hello world"
 
 The script will:
 - Convert your text to speech
-- Generate a WhatsApp-compatible audio file (Opus/OGG)
+- Generate a WhatsApp-compatible audio file (MP3)
 - Print the absolute file path
 
 ### Example
 
 ```bash
 $ python tts.py "Hello, this is a test message"
-/home/user/tts/output/tts_20260301_140530_a3f2b1c8.ogg
+/home/user/tts/output/tts_20260301_140530_a3f2b1c8.mp3
 ```
 
 ## Features
 
 - ✅ Text-to-speech conversion using Google TTS
-- ✅ WhatsApp-compatible audio format (Opus codec in OGG container)
+- ✅ WhatsApp-compatible audio format (MP3)
 - ✅ Automatic unique file naming
-- ✅ Multi-language support (auto-detection)
+- ✅ Multi-language support (Portuguese-Brazil default)
 - ✅ Clear error messages with exit codes
 
 ## Requirements
 
 - Python 3.8 or higher
-- ffmpeg
 - Internet connection (for TTS API)
 
 ## Documentation

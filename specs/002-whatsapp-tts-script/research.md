@@ -2,7 +2,7 @@
 
 **Feature**: 002-whatsapp-tts-script  
 **Date**: March 1, 2026  
-**Purpose**: Resolve technical unknowns and select appropriate libraries for TTS and audio encoding
+**Purpose**: Resolve technical unknowns and select appropriate TTS library for MP3 generation
 
 ## Research Tasks
 
@@ -32,55 +32,47 @@
 - **pyttsx3**: Rejected due to system dependency requirements (espeak) which complicates Oracle Linux setup
 - **Coqui TTS**: Rejected due to complexity, large model sizes, and uncertain ARM 64-bit support
 
-### 2. Audio Encoding Library for Opus/OGG
+### 2. Audio Format Selection
 
-**Question**: How to convert audio to Opus codec in OGG container format for WhatsApp compatibility?
+**Question**: What audio format should be used for WhatsApp compatibility?
 
-**Options Evaluated**:
-
-| Approach | Pros | Cons | ARM 64 Support |
-|----------|------|------|----------------|
-| **pydub + ffmpeg** | - Simple Python API<br>- Flexible format conversion<br>- Well documented | - Requires ffmpeg system dependency<br>- Additional installation step | ✅ Yes (ffmpeg available for ARM) |
-| **opuslib** | - Direct Opus encoding<br>- Python bindings | - Requires libopus system library<br>- More complex API<br>- Need separate OGG muxing | ⚠️ Requires compilation |
-| **subprocess + ffmpeg** | - Direct control<br>- No Python audio library needed | - Less Pythonic<br>- Error handling complexity | ✅ Yes |
-
-**Decision**: **pydub with ffmpeg**
+**Decision**: **MP3 (native gTTS output)**
 
 **Rationale**:
-- Clean Python API that abstracts audio format conversion complexity
-- ffmpeg is widely available in Oracle Linux repositories (installable via yum)
-- Handles both Opus encoding and OGG container muxing in one step
-- Well-tested and maintained library
-- Simpler error handling compared to raw subprocess calls
-- Aligns with Constitution Principle III (minimal but justified dependencies)
+- gTTS natively outputs MP3 format - no conversion needed
+- MP3 is fully supported by WhatsApp on Android and iOS
+- No additional dependencies required (no ffmpeg, no pydub)
+- Simpler implementation with fewer points of failure
+- Faster generation (no conversion step)
+- Aligns with Constitution Principle III (minimal dependencies)
 
-**Alternatives Considered**:
-- **opuslib**: Rejected due to compilation requirements and complexity
-- **subprocess + ffmpeg**: Rejected due to increased code complexity for error handling
+**Trade-offs**:
+- MP3 files are slightly larger than Opus/OGG (acceptable for typical messages)
+- No sample rate optimization (gTTS default is sufficient for voice)
 
 ### 3. Audio Format Workflow
 
 **Question**: What is the complete workflow from text to WhatsApp-compatible audio?
 
-**Decision**: Three-stage pipeline
+**Decision**: Direct MP3 generation
 
 **Workflow**:
 ```
-1. Text Input → gTTS → MP3 audio (in-memory or temp file)
-2. MP3 audio → pydub → Audio object
-3. Audio object → pydub.export() → Opus/OGG file
+1. Text Input → gTTS → MP3 audio (in-memory BytesIO)
+2. MP3 audio → Write to file → output/tts_*.mp3
+3. Print absolute file path to stdout
 ```
 
 **Rationale**:
-- gTTS natively outputs MP3 format
-- pydub can read MP3 and export to any format supported by ffmpeg
-- Single conversion step minimizes quality loss
-- Temporary file handling keeps disk usage minimal
+- Simplest possible workflow with minimal steps
+- gTTS natively outputs MP3 - no conversion needed
+- In-memory buffer avoids temporary files
+- Direct file write minimizes I/O operations
 
 **Technical Details**:
-- Opus codec parameters for WhatsApp: 16kHz sample rate, mono channel (standard voice message format)
-- OGG container with Opus codec is WhatsApp's native format
-- File extension: `.ogg` (not `.opus`)
+- MP3 format is universally supported by WhatsApp
+- No special encoding parameters needed
+- File extension: `.mp3`
 
 ### 4. File Naming Strategy
 
@@ -88,7 +80,7 @@
 
 **Decision**: Timestamp-based naming with UUID fallback
 
-**Format**: `tts_YYYYMMDD_HHMMSS_<hash>.ogg`
+**Format**: `tts_YYYYMMDD_HHMMSS_<hash>.mp3`
 
 **Rationale**:
 - Timestamp provides human-readable ordering
@@ -96,7 +88,7 @@
 - Predictable format aids debugging
 - Sortable by creation time
 
-**Example**: `tts_20260301_140530_a3f2b1c8.ogg`
+**Example**: `tts_20260301_140530_a3f2b1c8.mp3`
 
 **Alternatives Considered**:
 - Pure UUID: Rejected due to lack of human readability
@@ -111,18 +103,18 @@
 **Required Packages**:
 ```bash
 # Oracle Linux installation commands
-sudo yum install -y python3 python3-pip ffmpeg
+sudo yum install -y python3 python3-pip
 ```
 
 **Rationale**:
 - Python 3.8+ available in Oracle Linux repositories
-- ffmpeg available in EPEL or Oracle Linux repos
-- No compilation required
+- No system dependencies required beyond Python
+- Pure Python solution - no compilation needed
 - All packages have ARM 64-bit builds
 
 **Verification**:
-- ffmpeg ARM 64-bit support confirmed in Oracle Linux 8/9
 - Python 3.8+ standard in Oracle Linux 8+
+- No additional system packages required
 
 ### 6. Error Handling Strategy
 
@@ -145,8 +137,8 @@ sudo yum install -y python3 python3-pip ffmpeg
    - Disk full → Exit code 3, message: "Error: Insufficient disk space"
 
 4. **Audio Processing Errors**:
-   - ffmpeg not found → Exit code 4, message: "Error: ffmpeg not installed (run: sudo yum install ffmpeg)"
-   - Encoding failure → Exit code 4, message: "Error: Audio encoding failed"
+   - TTS generation failure → Exit code 4, message: "Error: Audio processing failed"
+   - File write failure → Exit code 4, message: "Error: Cannot save audio file"
 
 **Rationale**:
 - Distinct exit codes enable programmatic error detection

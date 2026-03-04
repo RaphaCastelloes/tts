@@ -3,12 +3,13 @@
 WhatsApp TTS Script - Convert text to speech for WhatsApp
 
 This script converts text input to speech and generates WhatsApp-compatible
-audio files in Opus/OGG format.
+audio files in MP3 format.
 
 Usage: python tts.py "your text here"
 """
 
 import sys
+import argparse
 from datetime import datetime
 import uuid
 from pathlib import Path
@@ -20,11 +21,6 @@ except ImportError:
     print("Error: gTTS not installed. Run: pip install gTTS==2.5.0", file=sys.stderr)
     sys.exit(4)
 
-try:
-    from pydub import AudioSegment
-except ImportError:
-    print("Error: pydub not installed. Run: pip install pydub==0.25.1", file=sys.stderr)
-    sys.exit(4)
 
 
 # Exit codes
@@ -58,7 +54,7 @@ def generate_filename():
     """
     Generate unique filename for audio file.
     
-    Format: tts_YYYYMMDD_HHMMSS_<hash>.ogg
+    Format: tts_YYYYMMDD_HHMMSS_<hash>.mp3
     
     Returns:
         str: Generated filename
@@ -120,15 +116,28 @@ def generate_speech(text):
     except Exception as e:
         raise Exception(f"TTS generation failed: {e}")
 
+
 def main():
     """Main execution function."""
-    # Check for command-line arguments
-    if len(sys.argv) < 2:
-        print_error("No text provided. Usage: python tts.py \"text\"")
+    # Parse command-line arguments
+    parser = argparse.ArgumentParser(
+        description='Convert text to speech for WhatsApp',
+        formatter_class=argparse.RawDescriptionHelpFormatter
+    )
+    parser.add_argument('text', help='Text to convert to speech')
+    parser.add_argument(
+        '-o', '--output',
+        dest='file_path',
+        help='Custom output file path (optional). If not provided, auto-generates in output/ directory'
+    )
+    
+    try:
+        args = parser.parse_args()
+    except SystemExit:
         sys.exit(EXIT_INPUT_ERROR)
     
     # Get text input
-    text = sys.argv[1]
+    text = args.text
     
     # Validate input
     is_valid, error_msg = validate_input(text)
@@ -143,21 +152,29 @@ def main():
         print_error(f"Cannot write to output directory. Check permissions.")
         sys.exit(EXIT_FILESYSTEM_ERROR)
     
-    # Generate filename
-    filename = generate_filename()
-    output_path = output_dir / filename
+    # Determine output path
+    if args.file_path:
+        # Use custom file path
+        output_path = Path(args.file_path)
+        # Ensure .mp3 extension
+        if output_path.suffix.lower() != '.mp3':
+            output_path = output_path.with_suffix('.mp3')
+        # Create parent directory if needed
+        try:
+            output_path.parent.mkdir(parents=True, exist_ok=True)
+        except OSError as e:
+            print_error(f"Cannot create output directory. Check permissions.")
+            sys.exit(EXIT_FILESYSTEM_ERROR)
+    else:
+        # Generate filename in default output/ directory
+        filename = generate_filename()
+        output_path = output_dir / filename
     
     # Generate speech from text
     try:
         mp3_audio = generate_speech(text)
-        with open(output_path, "wb") as f:
-            f.write(mp3_audio.read())
-        print(output_path)
-        sys.exit(EXIT_SUCCESS)
     except Exception as e:
         error_msg = str(e)
-        # Debug: print actual error
-        print(f"[DEBUG] TTS Error: {type(e).__name__}: {error_msg}", file=sys.stderr)
         if "network" in error_msg.lower() or "connection" in error_msg.lower():
             print_error("Cannot connect to TTS service. Check your internet connection.")
             sys.exit(EXIT_NETWORK_ERROR)
@@ -165,13 +182,13 @@ def main():
             print_error(f"TTS service temporarily unavailable. Please try again later.")
             sys.exit(EXIT_NETWORK_ERROR)
     
+    # Save MP3 audio to file
+    try:
+        with open(output_path, "wb") as f:
+            f.write(mp3_audio.read())
     except Exception as e:
-        error_msg = str(e)
-        if "ffmpeg" in error_msg:
-            print_error(error_msg)
-        else:
-            print_error("Audio encoding failed. Check ffmpeg installation.")
-        sys.exit(EXIT_PROCESSING_ERROR)
+        print_error(f"Cannot write to output directory. Check permissions.")
+        sys.exit(EXIT_FILESYSTEM_ERROR)
     
     # Print absolute file path to stdout
     print(output_path.absolute())
