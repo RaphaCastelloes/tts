@@ -17,9 +17,9 @@
 
 **Purpose**: Project initialization and dependency setup
 
-- [ ] T001 Add pydub==0.25.1 to c:\Users\caste\source\repos\tts\requirements.txt
-- [ ] T002 Install dependencies via pip install -r requirements.txt
-- [ ] T003 Verify ffmpeg is installed on system (yum list installed ffmpeg)
+- [x] T001 Add pydub==0.25.1 to c:\Users\caste\source\repos\tts\requirements.txt
+- [x] T002 Install dependencies via pip install -r requirements.txt
+- [x] T003 Verify ffmpeg is installed on system (yum list installed ffmpeg)
 
 ---
 
@@ -29,9 +29,9 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T004 Add --format argument to argparse in c:\Users\caste\source\repos\tts\tts.py (choices=['mp3', 'ogg'], default='mp3')
-- [ ] T005 Create format validation function in c:\Users\caste\source\repos\tts\tts.py (validate_format)
-- [ ] T006 Update file extension logic to auto-correct based on format in c:\Users\caste\source\repos\tts\tts.py (get_output_path_with_extension)
+- [x] T004 Add --format argument to argparse in c:\Users\caste\source\repos\tts\tts.py (choices=['mp3', 'ogg'], default='mp3')
+- [x] T005 Create format validation function in c:\Users\caste\source\repos\tts\tts.py (validate_format)
+- [x] T006 Update file extension logic to auto-correct based on format in c:\Users\caste\source\repos\tts\tts.py (get_output_path_with_extension)
 
 **Checkpoint**: Foundation ready - user story implementation can now begin
 
@@ -47,50 +47,50 @@
 
 > **NOTE: Write these tests FIRST, ensure they FAIL before implementation**
 
-- [ ] T007 [P] [US1] Create test_format_argument_parsing in c:\Users\caste\source\repos\tts\tests\test_tts.py
+- [x] T007 [P] [US1] Create test_format_argument_parsing in c:\Users\caste\source\repos\tts\tests\test_tts.py
   - Test --format ogg is accepted
   - Test --format mp3 is accepted  
   - Test invalid format returns error
   - Test default format is mp3
 
-- [ ] T008 [P] [US1] Create test_ogg_file_generation in c:\Users\caste\source\repos\tts\tests\test_audio_format.py
+- [x] T008 [P] [US1] Create test_ogg_file_generation in c:\Users\caste\source\repos\tts\tests\test_audio_format.py
   - Test OGG file is created when --format ogg specified
   - Test file has .ogg extension
   - Test file is valid OGG format
   - Test file contains Opus codec
 
-- [ ] T009 [P] [US1] Create test_extension_auto_correction in c:\Users\caste\source\repos\tts\tests\test_tts.py
+- [x] T009 [P] [US1] Create test_extension_auto_correction in c:\Users\caste\source\repos\tts\tests\test_tts.py
   - Test .mp3 extension corrected to .ogg when --format ogg
   - Test .ogg extension preserved when --format ogg
   - Test extension auto-appended when missing
 
-- [ ] T010 [P] [US1] Create test_ogg_conversion_errors in c:\Users\caste\source\repos\tts\tests\test_tts.py
+- [x] T010 [P] [US1] Create test_ogg_conversion_errors in c:\Users\caste\source\repos\tts\tests\test_tts.py
   - Test error when ffmpeg not available
   - Test error when pydub import fails
   - Test proper exit code 4 for conversion errors
 
 ### Implementation for User Story 1
 
-- [ ] T011 [US1] Implement convert_to_ogg function in c:\Users\caste\source\repos\tts\tts.py
+- [x] T011 [US1] Implement convert_to_ogg function in c:\Users\caste\source\repos\tts\tts.py
   - Use pydub AudioSegment to load MP3
   - Export as OGG with Opus codec (libopus)
   - Handle pydub import errors
   - Handle ffmpeg availability errors
   - Return path to OGG file
 
-- [ ] T012 [US1] Update main execution flow in c:\Users\caste\source\repos\tts\tts.py
+- [x] T012 [US1] Update main execution flow in c:\Users\caste\source\repos\tts\tts.py
   - Check format argument after MP3 generation
   - If format == 'ogg', call convert_to_ogg()
   - Delete intermediate MP3 file after OGG conversion
   - Update output_path variable to OGG path
 
-- [ ] T013 [US1] Add error handling for OGG conversion in c:\Users\caste\source\repos\tts\tts.py
+- [x] T013 [US1] Add error handling for OGG conversion in c:\Users\caste\source\repos\tts\tts.py
   - Catch pydub ModuleNotFoundError
   - Catch ffmpeg FileNotFoundError
   - Print helpful error messages to stderr
   - Exit with code 4 for conversion errors
 
-- [ ] T014 [US1] Add format validation in argument parser in c:\Users\caste\source\repos\tts\tts.py
+- [x] T014 [US1] Add format validation in argument parser in c:\Users\caste\source\repos\tts\tts.py
   - Validate format in ['mp3', 'ogg']
   - Print error for invalid formats
   - Exit with code 1 for validation errors
@@ -107,25 +107,25 @@
 
 ### Tests for User Story 2
 
-- [ ] T015 [P] [US2] Create test_backward_compatibility in c:\Users\caste\source\repos\tts\tests\test_tts.py
+- [x] T015 [P] [US2] Create test_backward_compatibility in c:\Users\caste\source\repos\tts\tests\test_tts.py
   - Test no --format flag defaults to MP3
   - Test MP3 file naming unchanged
   - Test existing --lang option works with both formats
   - Test existing -o option works with both formats
 
-- [ ] T016 [P] [US2] Create test_explicit_mp3_format in c:\Users\caste\source\repos\tts\tests\test_tts.py
+- [x] T016 [P] [US2] Create test_explicit_mp3_format in c:\Users\caste\source\repos\tts\tests\test_tts.py
   - Test --format mp3 generates MP3 file
   - Test MP3 file is valid
   - Test MP3 file path returned to stdout
 
 ### Implementation for User Story 2
 
-- [ ] T017 [US2] Verify default format logic in c:\Users\caste\source\repos\tts\tts.py
+- [x] T017 [US2] Verify default format logic in c:\Users\caste\source\repos\tts\tts.py
   - Ensure argparse default='mp3' for --format
   - Verify MP3 generation when format == 'mp3'
   - No conversion step when format == 'mp3'
 
-- [ ] T018 [US2] Run regression tests for existing functionality in c:\Users\caste\source\repos\tts\tests\
+- [x] T018 [US2] Run regression tests for existing functionality in c:\Users\caste\source\repos\tts\tests\
   - pytest tests/test_tts.py -k "not ogg"
   - Verify all existing tests still pass
   - Verify no breaking changes
@@ -142,23 +142,23 @@
 
 ### Implementation for User Story 3
 
-- [ ] T019 [P] [US3] Update Usage section in c:\Users\caste\source\repos\tts\SKILL.md
+- [x] T019 [P] [US3] Update Usage section in c:\Users\caste\source\repos\tts\SKILL.md
   - Add --format option to command-line options table
   - Add OGG generation examples
   - Show both MP3 and OGG usage
 
-- [ ] T020 [P] [US3] Update Bot Integration Use Case in c:\Users\caste\source\repos\tts\SKILL.md
+- [x] T020 [P] [US3] Update Bot Integration Use Case in c:\Users\caste\source\repos\tts\SKILL.md
   - Remove step 5 (mp3-to-ogg conversion)
   - Update step 4 to show --format ogg option
   - Update workflow to be 5 steps instead of 6
   - Remove reference to separate mp3-to-ogg skill
 
-- [ ] T021 [P] [US3] Update Dependencies section in c:\Users\caste\source\repos\tts\SKILL.md
+- [x] T021 [P] [US3] Update Dependencies section in c:\Users\caste\source\repos\tts\SKILL.md
   - Add pydub to Python dependencies list
   - Add ffmpeg to system dependencies
   - Document ffmpeg installation: yum install ffmpeg
 
-- [ ] T022 [P] [US3] Add Error Messages section for OGG in c:\Users\caste\source\repos\tts\SKILL.md
+- [x] T022 [P] [US3] Add Error Messages section for OGG in c:\Users\caste\source\repos\tts\SKILL.md
   - Document invalid format error
   - Document ffmpeg missing error
   - Document pydub missing error
@@ -172,23 +172,23 @@
 
 **Purpose**: Improvements and validation across all user stories
 
-- [ ] T023 [P] Create integration test for WhatsApp compatibility in c:\Users\caste\source\repos\tts\tests\test_integration.py
+- [x] T023 [P] Create integration test for WhatsApp compatibility in c:\Users\caste\source\repos\tts\tests\test_integration.py
   - Generate OGG file with --format ogg
   - Verify Opus codec using ffprobe
   - Verify file plays in audio player
   - Document manual WhatsApp testing steps
 
-- [ ] T024 [P] Add performance test for OGG conversion in c:\Users\caste\source\repos\tts\tests\test_integration.py
+- [x] T024 [P] Add performance test for OGG conversion in c:\Users\caste\source\repos\tts\tests\test_integration.py
   - Measure MP3 generation time
   - Measure OGG conversion time
   - Verify total time within 1.1-10.5 seconds
 
-- [ ] T025 Run full test suite in c:\Users\caste\source\repos\tts\tests\
+- [x] T025 Run full test suite in c:\Users\caste\source\repos\tts\tests\
   - pytest tests/ -v
   - Verify all tests pass
   - Check test coverage
 
-- [ ] T026 Update SKILL.md frontmatter in c:\Users\caste\source\repos\tts\SKILL.md
+- [x] T026 Update SKILL.md frontmatter in c:\Users\caste\source\repos\tts\SKILL.md
   - Update description to mention OGG support
   - Keep name: tts
 

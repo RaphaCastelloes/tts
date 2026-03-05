@@ -1,13 +1,13 @@
 ---
 name: tts
-description: Convert text to speech and generate WhatsApp-compatible audio files in MP3 format.
+description: Convert text to speech and generate WhatsApp-compatible audio files in MP3 or OGG format.
 ---
 
 # WhatsApp TTS Script
 
 ## Purpose
 
-Convert text to speech and generate WhatsApp-compatible audio files in MP3 format. This command-line tool is designed to be used by an **OpenClaw bot** integrated with WhatsApp channels.
+Convert text to speech and generate WhatsApp-compatible audio files in MP3 or OGG format. This command-line tool is designed to be used by an **OpenClaw bot** integrated with WhatsApp channels.
 
 **Bot Integration Use Case**: 
 
@@ -18,11 +18,12 @@ This skill is triggered when a user sends an **audio message** (voice note) to t
 1. **User sends audio** → WhatsApp channel receives voice message
 2. **Bot detects audio input** → Triggers this TTS skill (not triggered for text messages)
 3. **Bot generates response text** → Passes text to this skill
-4. **Skill converts text to audio** → Generates `.mp3` file
-5. **Another Skill - mp3-to-ogg - converts mp3 to ogg** → Generates WhatsApp-compatible `.ogg` file
-6. **Bot sends audio back ogg** → User receives voice response
+4. **Skill converts text to audio** → Generates WhatsApp-compatible `.ogg` file (using `--format ogg`)
+5. **Bot sends audio back** → User receives voice response
 
 This ensures the bot maintains the same communication mode as the user: when users send voice messages, they receive voice responses.
+
+**Note**: The skill now supports direct OGG generation via the `--format ogg` option, eliminating the need for a separate mp3-to-ogg conversion step.
 
 ## Usage
 
@@ -35,11 +36,17 @@ python tts.py "your text here"
 ### Examples
 
 ```bash
-# Default language (Brazilian Portuguese)
+# Default language (Brazilian Portuguese) - generates MP3
 python tts.py "Olá, como você está?"
 
 # English text with explicit language selection
 python tts.py "hello world" --lang en
+
+# Generate OGG format for WhatsApp (NEW)
+python tts.py "hello world" --format ogg --lang en
+
+# Generate MP3 format (explicit)
+python tts.py "hello world" --format mp3 --lang en
 
 # Portuguese text with explicit language selection
 python tts.py "Olá mundo" --lang pt-br
@@ -50,19 +57,26 @@ python tts.py "Good morning! Let's meet at 3 PM." --lang en
 # Longer message
 python tts.py "This is a longer message that will be converted to speech for WhatsApp." --lang en
 
-# Custom output file path
+# Custom output file path with OGG format
+python tts.py "hello" -o /path/to/my_audio.ogg --format ogg --lang en
+
+# Custom output file path with MP3 format
 python tts.py "hello" -o /path/to/my_audio.mp3 --lang en
 
 # Short form
 python tts.py "hello" --output custom_name.mp3 --lang en
 
-# Auto-adds .mp3 extension if missing
-python tts.py "hello" -o myfile --lang en
-# Creates: myfile.mp3
+# Auto-adds correct extension based on format
+python tts.py "hello" -o myfile --format ogg --lang en
+# Creates: myfile.ogg
+
+# Auto-corrects extension to match format
+python tts.py "hello" -o myfile.mp3 --format ogg --lang en
+# Creates: myfile.ogg (extension corrected)
 
 # Default language without --lang (backward compatible)
 python tts.py "Olá mundo"
-# Uses pt-br by default
+# Uses pt-br by default, generates MP3
 ```
 
 ### Command-Line Options
@@ -72,12 +86,13 @@ python tts.py "Olá mundo"
 python tts.py --help
 
 # Required argument
-python tts.py TEXT              # Text to convert to speech
+python tts.py TEXT                  # Text to convert to speech
 
 # Optional arguments
-python tts.py TEXT -o FILE      # Custom output file path
-python tts.py TEXT --output FILE # Same as -o
-python tts.py TEXT --lang LANG  # Language for speech output (en or pt-br, default: pt-br)
+python tts.py TEXT -o FILE          # Custom output file path
+python tts.py TEXT --output FILE    # Same as -o
+python tts.py TEXT --lang LANG      # Language for speech output (en or pt-br, default: pt-br)
+python tts.py TEXT --format FORMAT  # Output format (mp3 or ogg, default: mp3)
 ```
 
 ## Inputs
@@ -85,8 +100,9 @@ python tts.py TEXT --lang LANG  # Language for speech output (en or pt-br, defau
 | Parameter | Type | Required | Description | Constraints |
 |-----------|------|----------|-------------|-------------|
 | text | string | Yes | Text to convert to speech | 1-1000 characters, UTF-8 encoded |
-| -o, --output | string | No | Custom output file path | Valid file path, .mp3 extension auto-added if missing |
+| -o, --output | string | No | Custom output file path | Valid file path, extension auto-corrected to match format |
 | --lang | string | No | Language for speech output | Must be 'en' or 'pt-br' (default: pt-br) |
+| --format | string | No | Output audio format | Must be 'mp3' or 'ogg' (default: mp3) |
 
 ## Outputs
 
@@ -142,6 +158,7 @@ pip install -r requirements.txt
 
 Required packages:
 - `gTTS==2.5.0` - Google Text-to-Speech API
+- `pydub==0.25.1` - Audio format conversion (required for OGG output)
 - `pytest==7.4.3` - Testing framework (development only)
 
 ### System Dependencies
@@ -149,6 +166,20 @@ Required packages:
 **Required**:
 - Python 3.8 or higher
 - Internet connection (for TTS API)
+- **ffmpeg** - Required for OGG format conversion
+
+**Install ffmpeg on Oracle Linux**:
+```bash
+# Using yum
+sudo yum install ffmpeg
+
+# Or using EPEL repository
+sudo yum install epel-release
+sudo yum install ffmpeg
+
+# Verify installation
+ffmpeg -version
+```
 
 
 ## Exit Codes
@@ -168,8 +199,9 @@ Required packages:
 ```
 Error: No text provided. Usage: python tts.py "text"
 Error: Text exceeds maximum length of 1000 characters
-usage: tts.py [-h] [-o FILE_PATH] [--lang {en,pt-br}] text
+usage: tts.py [-h] [-o FILE_PATH] [--lang {en,pt-br}] [--format {mp3,ogg}] text
 tts.py: error: argument --lang: invalid choice: 'fr' (choose from 'en', 'pt-br')
+tts.py: error: argument --format: invalid choice: 'wav' (choose from 'mp3', 'ogg')
 ```
 
 ### Network Errors (Exit Code 2)
@@ -190,6 +222,9 @@ Error: Insufficient disk space to create audio file
 
 ```
 Error: Audio processing failed. Please try again.
+Error: pydub library not found. Install with: pip install pydub==0.25.1
+Error: Cannot convert to OGG format. ffmpeg not found. Install with: yum install ffmpeg
+Error: Audio format conversion failed: [specific error details]
 ```
 
 ## Troubleshooting
@@ -204,9 +239,20 @@ Error: Audio processing failed. Please try again.
 ### Audio won't play in WhatsApp
 
 **Verify**:
-1. File format: `file output/tts_*.mp3` should show "MP3 audio"
+1. File format: 
+   - MP3: `file output/tts_*.mp3` should show "MP3 audio"
+   - OGG: `file output/tts_*.ogg` should show "Ogg data, Opus audio"
 2. File is not corrupted
 3. File size is reasonable (10-50 KB for typical messages)
+4. For OGG files, verify Opus codec: `ffprobe output/tts_*.ogg`
+
+### OGG conversion fails
+
+**Check**:
+1. ffmpeg is installed: `ffmpeg -version`
+2. pydub is installed: `pip show pydub`
+3. Sufficient disk space for conversion
+4. Original MP3 file is valid
 
 ### Slow performance
 
