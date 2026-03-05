@@ -17,8 +17,8 @@
 
 **Purpose**: Project initialization - create new directory structure
 
-- [ ] T001 Create c:\Users\caste\source\repos\tts\scripts directory
-- [ ] T002 Verify git is in clean state before file moves (git status)
+- [x] T001 Create c:\Users\caste\source\repos\tts\scripts directory
+- [x] T002 Verify git is in clean state before file moves (git status)
 
 ---
 
@@ -38,14 +38,14 @@
 
 ### Implementation for User Story 1
 
-- [ ] T003 [US1] Move tts.py to scripts/ using git mv c:\Users\caste\source\repos\tts\tts.py c:\Users\caste\source\repos\tts\scripts\tts.py
-- [ ] T004 [US1] Move convert_mp3_to_ogg.py to scripts/ using git mv c:\Users\caste\source\repos\tts\mp3-to-ogg\scripts\convert_mp3_to_ogg.py c:\Users\caste\source\repos\tts\scripts\convert_mp3_to_ogg.py
-- [ ] T005 [US1] Update test imports in c:\Users\caste\source\repos\tts\tests\test_tts.py to reference scripts/ location
-- [ ] T006 [US1] Update test imports in c:\Users\caste\source\repos\tts\tests\test_audio_format.py to reference scripts/ location
-- [ ] T007 [US1] Update test imports in c:\Users\caste\source\repos\tts\tests\test_integration.py to reference scripts/ location
-- [ ] T008 [US1] Verify all tests pass after script relocation: pytest tests/ -v
-- [ ] T009 [US1] Test script execution from new location: python scripts/tts.py "hello" --lang en
-- [ ] T010 [US1] Test OGG conversion from new location: python scripts/tts.py "hello" --format ogg --lang en
+- [x] T003 [US1] Move tts.py to scripts/ using git mv c:\Users\caste\source\repos\tts\tts.py c:\Users\caste\source\repos\tts\scripts\tts.py
+- [x] T004 [US1] Move convert_mp3_to_ogg.py to scripts/ using git mv c:\Users\caste\source\repos\tts\mp3-to-ogg\scripts\convert_mp3_to_ogg.py c:\Users\caste\source\repos\tts\scripts\convert_mp3_to_ogg.py
+- [x] T005 [US1] Update test imports in c:\Users\caste\source\repos\tts\tests\test_tts.py to reference scripts/ location
+- [x] T006 [US1] Update test imports in c:\Users\caste\source\repos\tts\tests\test_audio_format.py to reference scripts/ location
+- [x] T007 [US1] Update test imports in c:\Users\caste\source\repos\tts\tests\test_integration.py to reference scripts/ location
+- [x] T008 [US1] Verify all tests pass after script relocation: pytest tests/ -v
+- [x] T009 [US1] Test script execution from new location: python scripts/tts.py "hello" --lang en
+- [x] T010 [US1] Test OGG conversion from new location: python scripts/tts.py "hello" --format ogg --lang en
 
 **Checkpoint**: User Story 1 complete - Scripts organized in standard `/scripts` directory, all tests passing
 
@@ -59,17 +59,17 @@
 
 ### Implementation for User Story 2
 
-- [ ] T011 [P] [US2] Extract Quick Start section from c:\Users\caste\source\repos\tts\README.md (lines 7-33)
-- [ ] T012 [P] [US2] Extract Features list from c:\Users\caste\source\repos\tts\README.md (lines 35-41)
-- [ ] T013 [P] [US2] Extract Project Structure from c:\Users\caste\source\repos\tts\README.md (lines 56-69)
-- [ ] T014 [US2] Insert Quick Start section into c:\Users\caste\source\repos\tts\SKILL.md after Purpose section (after line 26)
-- [ ] T015 [US2] Insert Features section into c:\Users\caste\source\repos\tts\SKILL.md as new section before Usage
-- [ ] T016 [US2] Update Project Structure diagram in c:\Users\caste\source\repos\tts\SKILL.md to show new scripts/ directory layout
-- [ ] T017 [US2] Update all usage examples in c:\Users\caste\source\repos\tts\SKILL.md to reference scripts/tts.py instead of tts.py
-- [ ] T018 [US2] Add Migration Notes section to c:\Users\caste\source\repos\tts\SKILL.md showing old vs new paths
-- [ ] T019 [US2] Rewrite c:\Users\caste\source\repos\tts\README.md to simplified version (< 50 lines) with overview and link to SKILL.md
-- [ ] T020 [US2] Verify SKILL.md contains all necessary sections and is self-contained
-- [ ] T021 [US2] Verify README.md is concise and links correctly to SKILL.md
+- [x] T011 [P] [US2] Extract Quick Start section from c:\Users\caste\source\repos\tts\README.md (lines 7-33)
+- [x] T012 [P] [US2] Extract Features list from c:\Users\caste\source\repos\tts\README.md (lines 35-41)
+- [x] T013 [P] [US2] Extract Project Structure from c:\Users\caste\source\repos\tts\README.md (lines 56-69)
+- [x] T014 [US2] Insert Quick Start section into c:\Users\caste\source\repos\tts\SKILL.md after Purpose section (after line 26)
+- [x] T015 [US2] Insert Features section into c:\Users\caste\source\repos\tts\SKILL.md as new section before Usage
+- [x] T016 [US2] Update Project Structure diagram in c:\Users\caste\source\repos\tts\SKILL.md to show new scripts/ directory layout
+- [x] T017 [US2] Update all usage examples in c:\Users\caste\source\repos\tts\SKILL.md to reference scripts/tts.py instead of tts.py
+- [x] T018 [US2] Add Migration Notes section to c:\Users\caste\source\repos\tts\SKILL.md showing old vs new paths
+- [x] T019 [US2] Rewrite c:\Users\caste\source\repos\tts\README.md to simplified version (< 50 lines) with overview and link to SKILL.md
+- [x] T020 [US2] Verify SKILL.md contains all necessary sections and is self-contained
+- [x] T021 [US2] Verify README.md is concise and links correctly to SKILL.md
 
 **Checkpoint**: User Story 2 complete - Documentation unified in SKILL.md, README.md simplified
 
@@ -83,9 +83,9 @@
 
 ### Implementation for User Story 3
 
-- [ ] T022 [US3] Remove mp3-to-ogg folder using git rm -r c:\Users\caste\source\repos\tts\mp3-to-ogg
-- [ ] T023 [US3] Verify folder is completely removed: ls c:\Users\caste\source\repos\tts\mp3-to-ogg should fail
-- [ ] T024 [US3] Add note in c:\Users\caste\source\repos\tts\SKILL.md Migration Notes that mp3-to-ogg is replaced by --format ogg
+- [x] T022 [US3] Remove mp3-to-ogg folder using git rm -r c:\Users\caste\source\repos\tts\mp3-to-ogg
+- [x] T023 [US3] Verify folder is completely removed: ls c:\Users\caste\source\repos\tts\mp3-to-ogg should fail
+- [x] T024 [US3] Add note in c:\Users\caste\source\repos\tts\SKILL.md Migration Notes that mp3-to-ogg is replaced by --format ogg
 
 **Checkpoint**: User Story 3 complete - Obsolete code removed, migration documented
 
@@ -95,12 +95,12 @@
 
 **Purpose**: Final validation and commit
 
-- [ ] T025 Run full test suite to verify 100% compatibility: pytest tests/ -v
-- [ ] T026 Test MP3 generation: python scripts/tts.py "final test" --lang en
-- [ ] T027 Test OGG generation: python scripts/tts.py "final test" --format ogg --lang en
-- [ ] T028 Verify project structure matches plan.md diagram
-- [ ] T029 Verify all documentation paths reference scripts/tts.py correctly
-- [ ] T030 Verify git history preserved for moved files: git log --follow scripts/tts.py
+- [x] T025 Run full test suite to verify 100% compatibility: pytest tests/ -v
+- [x] T026 Test MP3 generation: python scripts/tts.py "final test" --lang en
+- [x] T027 Test OGG generation: python scripts/tts.py "final test" --format ogg --lang en
+- [x] T028 Verify project structure matches plan.md diagram
+- [x] T029 Verify all documentation paths reference scripts/tts.py correctly
+- [x] T030 Verify git history preserved for moved files: git log --follow scripts/tts.py
 - [ ] T031 Commit all changes with descriptive message
 
 ---

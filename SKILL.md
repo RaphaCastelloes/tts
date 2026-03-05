@@ -25,57 +25,94 @@ This ensures the bot maintains the same communication mode as the user: when use
 
 **Note**: The skill now supports direct OGG generation via the `--format ogg` option, eliminating the need for a separate mp3-to-ogg conversion step.
 
+## Quick Start
+
+### Installation
+
+1. **Install Python dependencies**:
+```bash
+pip install -r requirements.txt
+```
+
+### Usage
+
+```bash
+python scripts/tts.py "hello world"
+```
+
+The script will:
+- Convert your text to speech
+- Generate a WhatsApp-compatible audio file (MP3 or OGG)
+- Print the absolute file path
+
+### Example
+
+```bash
+$ python scripts/tts.py "Hello, this is a test message"
+/home/user/tts/output/tts_20260301_140530_a3f2b1c8.mp3
+```
+
+## Features
+
+- ✅ Text-to-speech conversion using Google TTS
+- ✅ WhatsApp-compatible audio formats (MP3 and OGG with Opus codec)
+- ✅ Automatic unique file naming
+- ✅ Multi-language support (Portuguese-Brazil default, English)
+- ✅ Direct OGG generation with `--format ogg` option
+- ✅ Clear error messages with exit codes
+- ✅ Extension auto-correction
+
 ## Usage
 
 ### Basic Usage
 
 ```bash
-python tts.py "your text here"
+python scripts/tts.py "your text here"
 ```
 
 ### Examples
 
 ```bash
 # Default language (Brazilian Portuguese) - generates MP3
-python tts.py "Olá, como você está?"
+python scripts/tts.py "Olá, como você está?"
 
 # English text with explicit language selection
-python tts.py "hello world" --lang en
+python scripts/tts.py "hello world" --lang en
 
 # Generate OGG format for WhatsApp (NEW)
-python tts.py "hello world" --format ogg --lang en
+python scripts/tts.py "hello world" --format ogg --lang en
 
 # Generate MP3 format (explicit)
-python tts.py "hello world" --format mp3 --lang en
+python scripts/tts.py "hello world" --format mp3 --lang en
 
 # Portuguese text with explicit language selection
-python tts.py "Olá mundo" --lang pt-br
+python scripts/tts.py "Olá mundo" --lang pt-br
 
 # Text with punctuation
-python tts.py "Good morning! Let's meet at 3 PM." --lang en
+python scripts/tts.py "Good morning! Let's meet at 3 PM." --lang en
 
 # Longer message
-python tts.py "This is a longer message that will be converted to speech for WhatsApp." --lang en
+python scripts/tts.py "This is a longer message that will be converted to speech for WhatsApp." --lang en
 
 # Custom output file path with OGG format
-python tts.py "hello" -o /path/to/my_audio.ogg --format ogg --lang en
+python scripts/tts.py "hello" -o /path/to/my_audio.ogg --format ogg --lang en
 
 # Custom output file path with MP3 format
-python tts.py "hello" -o /path/to/my_audio.mp3 --lang en
+python scripts/tts.py "hello" -o /path/to/my_audio.mp3 --lang en
 
 # Short form
-python tts.py "hello" --output custom_name.mp3 --lang en
+python scripts/tts.py "hello" --output custom_name.mp3 --lang en
 
 # Auto-adds correct extension based on format
-python tts.py "hello" -o myfile --format ogg --lang en
+python scripts/tts.py "hello" -o myfile --format ogg --lang en
 # Creates: myfile.ogg
 
 # Auto-corrects extension to match format
-python tts.py "hello" -o myfile.mp3 --format ogg --lang en
+python scripts/tts.py "hello" -o myfile.mp3 --format ogg --lang en
 # Creates: myfile.ogg (extension corrected)
 
 # Default language without --lang (backward compatible)
-python tts.py "Olá mundo"
+python scripts/tts.py "Olá mundo"
 # Uses pt-br by default, generates MP3
 ```
 
@@ -83,16 +120,16 @@ python tts.py "Olá mundo"
 
 ```bash
 # View help
-python tts.py --help
+python scripts/tts.py --help
 
 # Required argument
-python tts.py TEXT                  # Text to convert to speech
+python scripts/tts.py TEXT                  # Text to convert to speech
 
 # Optional arguments
-python tts.py TEXT -o FILE          # Custom output file path
-python tts.py TEXT --output FILE    # Same as -o
-python tts.py TEXT --lang LANG      # Language for speech output (en or pt-br, default: pt-br)
-python tts.py TEXT --format FORMAT  # Output format (mp3 or ogg, default: mp3)
+python scripts/tts.py TEXT -o FILE          # Custom output file path
+python scripts/tts.py TEXT --output FILE    # Same as -o
+python scripts/tts.py TEXT --lang LANG      # Language for speech output (en or pt-br, default: pt-br)
+python scripts/tts.py TEXT --format FORMAT  # Output format (mp3 or ogg, default: mp3)
 ```
 
 ## Inputs
@@ -330,8 +367,11 @@ pytest --cov=tts tests/
 
 ```
 tts/
-├── tts.py                    # Main executable script
-├── SKILL.md                  # This file
+├── scripts/                  # Executable scripts
+│   ├── tts.py               # Main TTS script
+│   └── convert_mp3_to_ogg.py # Standalone conversion utility
+├── SKILL.md                  # Complete documentation
+├── README.md                 # Quick reference
 ├── requirements.txt          # Python dependencies
 ├── tests/
 │   ├── test_tts.py          # Unit tests
@@ -340,8 +380,61 @@ tts/
 └── output/                   # Generated audio files
 ```
 
+## Migration Notes
+
+**⚠️ Path Change in Version 1.1.0**
+
+If you're upgrading from a previous version, note the script location has changed:
+
+### Old Path (Before v1.1.0)
+```bash
+python tts.py "hello world"
+```
+
+### New Path (v1.1.0+)
+```bash
+python scripts/tts.py "hello world"
+```
+
+### Backward Compatibility
+
+If you have existing scripts or integrations:
+
+**Option 1: Update your scripts** (recommended)
+```bash
+# Change from:
+python tts.py "text" --lang en
+
+# To:
+python scripts/tts.py "text" --lang en
+```
+
+**Option 2: Create a symlink** (temporary)
+```bash
+# Linux/macOS:
+ln -s scripts/tts.py tts.py
+
+# Windows (PowerShell as Administrator):
+New-Item -ItemType SymbolicLink -Path "tts.py" -Target "scripts\tts.py"
+```
+
+### OGG Conversion
+
+The separate `mp3-to-ogg` skill has been integrated into the main TTS script:
+
+**Old Workflow** (deprecated):
+```bash
+python tts.py "hello" --lang en  # Generate MP3
+python mp3-to-ogg/scripts/convert_mp3_to_ogg.py output/file.mp3  # Convert
+```
+
+**New Workflow** (v1.1.0+):
+```bash
+python scripts/tts.py "hello" --format ogg --lang en  # Direct OGG generation
+```
+
 ## Version
 
-**Version**: 1.0.0  
+**Version**: 1.1.0  
 **Last Updated**: March 1, 2026  
 **License**: See project LICENSE file

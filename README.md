@@ -1,93 +1,46 @@
 # WhatsApp TTS Script
 
-Convert text to speech and generate WhatsApp-compatible audio files in MP3 format.
+Convert text to speech and generate WhatsApp-compatible audio files in MP3 or OGG format.
 
 **Purpose**: This skill is designed for **OpenClaw bot** integration with WhatsApp channels. It's triggered when users send audio messages to the bot, ensuring the bot responds with voice when users communicate via voice.
 
 ## Quick Start
 
-### Installation
-
-1. **Install Python dependencies**:
 ```bash
+# Install dependencies
 pip install -r requirements.txt
-```
 
+# Generate MP3 (default)
+python scripts/tts.py "hello world" --lang en
 
-### Usage
-
-```bash
-python tts.py "hello world"
-```
-
-The script will:
-- Convert your text to speech
-- Generate a WhatsApp-compatible audio file (MP3)
-- Print the absolute file path
-
-### Example
-
-```bash
-$ python tts.py "Hello, this is a test message"
-/home/user/tts/output/tts_20260301_140530_a3f2b1c8.mp3
+# Generate OGG for WhatsApp
+python scripts/tts.py "hello world" --format ogg --lang en
 ```
 
 ## Features
 
-- ✅ Text-to-speech conversion using Google TTS
-- ✅ WhatsApp-compatible audio format (MP3)
-- ✅ Automatic unique file naming
-- ✅ Multi-language support (Portuguese-Brazil default)
-- ✅ Clear error messages with exit codes
-
-## Requirements
-
-- Python 3.8 or higher
-- Internet connection (for TTS API)
+- ✅ Text-to-speech using Google TTS
+- ✅ MP3 and OGG output formats
+- ✅ Multi-language support (en, pt-br)
+- ✅ WhatsApp-compatible audio
+- ✅ Direct OGG generation with Opus codec
 
 ## Documentation
 
-See [SKILL.md](SKILL.md) for complete documentation including:
-- Detailed usage examples
-- Error codes and troubleshooting
-- Platform requirements
-- Performance characteristics
+See **[SKILL.md](SKILL.md)** for complete documentation including:
+- Detailed usage examples and all command-line options
+- Error codes, troubleshooting, and migration notes
+- Platform requirements and performance characteristics
+- Installation instructions for ffmpeg and dependencies
 
-## Project Structure
+## Requirements
 
-```
-tts/
-├── tts.py                    # Main executable script
-├── SKILL.md                  # Complete documentation
-├── README.md                 # This file
-├── requirements.txt          # Python dependencies
-├── tests/                    # Test suite
-│   ├── test_tts.py
-│   ├── test_audio_format.py
-│   └── test_integration.py
-└── output/                   # Generated audio files
-```
-
-## Development
-
-### Running Tests
-
-```bash
-pytest tests/
-```
-
-### Installing Development Dependencies
-
-```bash
-pip install -r requirements.txt
-```
-
-## License
-
-See LICENSE file for details.
+- Python 3.8+
+- Internet connection (for TTS API)
+- ffmpeg (for OGG format conversion)
 
 ## Version
 
-**Version**: 1.0.0 (MVP)  
+**Version**: 1.1.0  
 **Status**: Production Ready  
-**Last Updated**: March 1, 2026
+**Last Updated**: March 5, 2026

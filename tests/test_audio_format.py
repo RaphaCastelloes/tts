@@ -5,8 +5,8 @@ import os
 import sys
 from unittest.mock import Mock, patch
 
-# Add parent directory to path to import tts module
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+# Add scripts directory to path to import tts module
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'scripts'))
 
 
 class TestAudioFormatValidation:

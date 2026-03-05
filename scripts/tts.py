@@ -120,7 +120,7 @@ def ensure_output_directory():
     Raises:
         OSError: If directory cannot be created
     """
-    output_dir = Path(__file__).parent / "output"
+    output_dir = Path(__file__).parent.parent / "output"
     
     try:
         output_dir.mkdir(exist_ok=True)
