@@ -192,7 +192,7 @@
   - Update description to mention OGG support
   - Keep name: tts
 
-- [ ] T027 [P] Commit all changes to branch 006-ogg-output-option
+- [x] T027 [P] Commit all changes to branch 006-ogg-output-option
   - git add -A
   - git commit -m "Add OGG output format option with pydub"
 
