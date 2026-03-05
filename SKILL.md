@@ -1,3 +1,8 @@
+---
+name: tts
+description: Convert text to speech and generate WhatsApp-compatible audio files in MP3 format.
+---
+
 # WhatsApp TTS Script
 
 ## Purpose
