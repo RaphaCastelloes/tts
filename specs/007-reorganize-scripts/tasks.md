@@ -101,7 +101,7 @@
 - [x] T028 Verify project structure matches plan.md diagram
 - [x] T029 Verify all documentation paths reference scripts/tts.py correctly
 - [x] T030 Verify git history preserved for moved files: git log --follow scripts/tts.py
-- [ ] T031 Commit all changes with descriptive message
+- [x] T031 Commit all changes with descriptive message
 
 ---
 
